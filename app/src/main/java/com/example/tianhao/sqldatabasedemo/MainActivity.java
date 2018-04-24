@@ -12,20 +12,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+                SQLiteDatabase myDataBase = this.openOrCreateDatabase("Users", MODE_PRIVATE, null);
+                myDataBase.execSQL("CREATE TABLE IF NOT EXISTS newList (name VARCHAR, age INT(3),id INTEGER PRIMARY KEY)");
+                //myDataBase.execSQL("INSERT INTO newList (name, age) VALUES ('Nick ', 48)");
+                //myDataBase.execSQL("INSERT INTO newList (name, age) VALUES ('sarah ', 24)");
+                //myDataBase.execSQL("INSERT INTO newList (name, age) VALUES ('hello ', 29)");
+                myDataBase.execSQL("DELETE FROM newLIst WHERE id  =2");
 
-        SQLiteDatabase myDataBase = this.openOrCreateDatabase("Users", MODE_PRIVATE, null);
-        myDataBase.execSQL("CREATE TABLE IF NOT EXISTS users (name VARCHAR, age INT(3))");
-        //myDataBase.execSQL("INSERT INTO users (name, age) VALUES ('Nick ', 28)");
-        //myDataBase.execSQL("INSERT INTO users (name, age) VALUES ('sarah ', 24)");
+                Cursor c = myDataBase.rawQuery("SELECT * FROM newList", null);
+                int nameIndex = c.getColumnIndex("name");
+                int ageIndex = c.getColumnIndex("age");
+                int idIndex = c.getColumnIndex("id");
+                c.moveToFirst();
+                while (c != null) {
+                    Log.i("name", c.getString(nameIndex));
+                    Log.i("age", c.getString(ageIndex));
+                    Log.i("id", c.getString(idIndex));
 
-        Cursor c = myDataBase.rawQuery("SELECT * FROM users", null);
-        int nameIndex = c.getColumnIndex("name");
-        int ageIndex = c.getColumnIndex("age");
-        c.moveToFirst();
-        while (c !=null){
-            Log.i("name", c.getString(nameIndex));
-            Log.i("age", c.getString(ageIndex));
-            c.moveToNext();
-        }
+                    c.moveToNext();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
     }
 }
